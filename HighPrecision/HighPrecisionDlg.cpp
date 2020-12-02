@@ -93,6 +93,14 @@ BOOL Bomo_Flag_Calculate_shuju_to_txt = FALSE;//计算结果报讯
 ME_Sonser Bomo_sensor_R1;
 ME_Sonser Bomo_sensor_R2;
 ME_Sonser Bomo_sensor_R3;
+//初始化用
+DWORD sensor1;
+DWORD sensor2;
+DWORD sensor3;
+//传感器错误变量说明
+int err1 = 0;
+int err2 = 0;
+int err3 = 0;
 
 //循环的次数
 int Bomo_SJCJ_sensor_count_R = 0;//记录数据采集的次数
@@ -17355,10 +17363,14 @@ void CHighPrecisionDlg::OnTbtClickbomo()
 	Bomo_ChartCtrl_R2.ShowWindow(TRUE);//
 	Bomo_ChartCtrl_R.ShowWindow(TRUE);
 	
+
 	Bomo_Flag_bomo_Caiji_R = !Bomo_Flag_bomo_Caiji_R;//数据采集标志
-	KillTimer(0);
-	SetTimer(0, 40, NULL);
-	AfxBeginThread((AFX_THREADPROC)Bomo_paint_bomo, this);//波磨开始
+	//KillTimer(0);
+	//if(!Bomo_Flag_bomo_Caiji_R)
+	//{ 
+	//SetTimer(0, 40, NULL);
+	//}
+	//AfxBeginThread((AFX_THREADPROC)Bomo_paint_bomo, this);//波磨开始
 }
 
 
@@ -17421,34 +17433,36 @@ UINT CHighPrecisionDlg::Bomo_Shujun_Caiji_01(LPVOID pParam)
 	double data[10000];
 	float data_copy[10000];
 
-	int err = 0;
-	DWORD sensor;
+
+
 	//DWORD sensor = CreateSensorInstance(SENSOR_ILD1420);
 
-	Bomo_sensor_R1.CreateSensorInstance1(SENSOR_ILD1420, &sensor);
-	string com = "Com1";
-	int Baudrate = 921600;//设置波特率
-	double Sampleshape = 4;//设置采样频率
-
-	if (!sensor)
-		AfxMessageBox(_T("1初始化失败"));
-
-	if ((err = Bomo_sensor_R1.Open_1420(sensor, com, Baudrate))<0)
-		AfxMessageBox(_T("打开传感器1失败"));
-	if ((err = Bomo_sensor_R1.SetSamplerate(sensor, Sampleshape, Baudrate))<0)//设置参数
-		AfxMessageBox(_T("设置波特率失败1失败"));
 
 
 
 	while (!Bomo_Flag_bomo_Caiji_R)	// 10 cycles
 	{
 
-		if ((err = Bomo_sensor_R1.DataAvail1((int)sensor, &avail1)<0))
-			AfxMessageBox(_T("打开传感器1失败"));
-		//printf("Values avail: %04d\n", avail);
+		//if ((err1 = Bomo_sensor_R1.DataAvail1((int)sensor1, &avail1)<0))
+		//	AfxMessageBox(_T("打开传感器1失败"));
+		////printf("Values avail: %04d\n", avail);
 
-		Bomo_sensor_R1.TransferData1((int)sensor, NULL, data, sizeof(data), &read1);
-		//printf("Few values: ");
+		//Bomo_sensor_R1.TransferData1((int)sensor1, NULL, data, sizeof(data), &read1);
+
+
+
+
+
+		//模拟过程
+		//模拟过程
+		//模拟
+
+		for (int i = 0; i <400; i++)
+		{
+			data[i] = sin(i);
+		}
+		read1 = 400;
+		Sleep(1000);
 
 		//数据采集读取到文件
 		for (int j = 0; j < read1; j++)
@@ -17476,8 +17490,8 @@ UINT CHighPrecisionDlg::Bomo_Shujun_Caiji_01(LPVOID pParam)
 
 
 
-	Bomo_sensor_R1.Cleanup(sensor);
-	AfxMessageBox(_T("传感器1采集结束"));
+	Bomo_sensor_R1.Cleanup(sensor1);
+	//AfxMessageBox(_T("传感器1采集结束"));
 	return 0;
 
 
@@ -17524,34 +17538,32 @@ UINT CHighPrecisionDlg::Bomo_Shujun_Caiji_02(LPVOID pParam)
 	double data[10000];
 	float data_copy[10000];
 
-	int err = 0;
-	DWORD sensor;
+
+
 	//DWORD sensor = CreateSensorInstance(SENSOR_ILD1420);
 
-	Bomo_sensor_R2.CreateSensorInstance1(SENSOR_ILD1420, &sensor);
-	string com = "Com3";
-	int Baudrate = 921600;//设置波特率
-	double Sampleshape = 4;//设置采样频率
 
-	if (!sensor)
-		AfxMessageBox(_T("2初始化失败"));
-
-	if ((err = Bomo_sensor_R2.Open_1420(sensor, com, Baudrate))<0)
-		AfxMessageBox(_T("打开传感器2失败"));
-	if ((err = Bomo_sensor_R2.SetSamplerate(sensor, Sampleshape, Baudrate))<0)//设置参数
-		AfxMessageBox(_T("设置波特率失败2失败"));
 
 
 
 	while (!Bomo_Flag_bomo_Caiji_R)	// 10 cycles
 	{
 
-		if ((err = Bomo_sensor_R2.DataAvail1((int)sensor, &avail1)<0))
-			AfxMessageBox(_T("打开传感器2失败"));
-		//printf("Values avail: %04d\n", avail);
+		//if ((err2 = Bomo_sensor_R2.DataAvail1((int)sensor2, &avail1)<0))
+		//	AfxMessageBox(_T("打开传感器2失败"));
+		////printf("Values avail: %04d\n", avail);
 
-		Bomo_sensor_R2.TransferData1((int)sensor, NULL, data, sizeof(data), &read1);
-		//printf("Few values: ");
+		//Bomo_sensor_R2.TransferData1((int)sensor2, NULL, data, sizeof(data), &read1);
+	
+
+
+		//模拟
+		for (int i = 0; i <400; i++)
+		{
+			data[i] = cos(i);
+		}
+		read1 = 400;
+		Sleep(1000);
 
 		//数据采集读取到文件
 		for (int j = 0; j < read1; j++)
@@ -17584,8 +17596,8 @@ UINT CHighPrecisionDlg::Bomo_Shujun_Caiji_02(LPVOID pParam)
 
 
 
-	Bomo_sensor_R2.Cleanup(sensor);
-	AfxMessageBox(_T("传感器2采集结束"));
+	Bomo_sensor_R2.Cleanup(sensor2);
+	//AfxMessageBox(_T("传感器2采集结束"));
 	return 0;
 
 
@@ -17627,34 +17639,37 @@ UINT CHighPrecisionDlg::Bomo_Shujun_Caiji_03(LPVOID pParam)
 	double data[10000];
 	float data_copy[10000];
 
-	int err = 0;
-	DWORD sensor;
+
+
 	//DWORD sensor = CreateSensorInstance(SENSOR_ILD1420);
 
-	Bomo_sensor_R3.CreateSensorInstance1(SENSOR_ILD1420, &sensor);
-	string com = "Com5";
-	int Baudrate = 921600;//设置波特率
-	double Sampleshape = 4;//设置采样频率
 
-	if (!sensor)
-		AfxMessageBox(_T("3初始化失败"));
 
-	if ((err = Bomo_sensor_R3.Open_1420(sensor, com, Baudrate))<0)
-		AfxMessageBox(_T("打开传感器3失败"));
-	if ((err = Bomo_sensor_R3.SetSamplerate(sensor, Sampleshape, Baudrate))<0)//设置参数
-		AfxMessageBox(_T("设置波特率失败3失败"));
 
 
 
 	while (!Bomo_Flag_bomo_Caiji_R)	// 10 cycles
 	{
 
-		if ((err = Bomo_sensor_R3.DataAvail1((int)sensor, &avail1)<0))
-			AfxMessageBox(_T("打开传感器3失败"));
-		//printf("Values avail: %04d\n", avail);
+		//if ((err3 = Bomo_sensor_R3.DataAvail1((int)sensor3, &avail1)<0))
+		//	AfxMessageBox(_T("打开传感器3失败"));
+		////printf("Values avail: %04d\n", avail);
 
-		Bomo_sensor_R3.TransferData1((int)sensor, NULL, data, sizeof(data), &read1);
-		//printf("Few values: ");
+		//Bomo_sensor_R3.TransferData1((int)sensor3, NULL, data, sizeof(data), &read1);
+
+
+
+		//模拟过程
+		//模拟过程
+		//模拟
+
+		for (int i = 0; i <400; i++)
+		{
+			data[i] = sin(i);
+		}
+		read1 = 400;
+		Sleep(1000);
+
 
 		//数据采集读取到文件
 		for (int j = 0; j < read1; j++)
@@ -17683,8 +17698,8 @@ UINT CHighPrecisionDlg::Bomo_Shujun_Caiji_03(LPVOID pParam)
 
 
 
-	Bomo_sensor_R3.Cleanup(sensor);
-	AfxMessageBox(_T("传感器3采集结束"));
+	Bomo_sensor_R3.Cleanup(sensor3);
+	//AfxMessageBox(_T("传感器3采集结束"));
 
 
 
@@ -17735,7 +17750,7 @@ UINT CHighPrecisionDlg::Bomo_Shujun_chuli_01(LPVOID pParam)
 						//文件存储
 
 
-						Bomo_SJCJ_sensor_count_R++;//数据采集的次数
+						//Bomo_SJCJ_sensor_count_R++;//数据采集的次数
 						Bomo_Flag_bomo_TxT_R = TRUE;//数据导入txt
 						Bomo_Flag_bomo_Jisuan_R = TRUE;//数据开始运算txt
 						dlg->Bomo_Calculate();//记得删除
@@ -17759,26 +17774,42 @@ UINT CHighPrecisionDlg::Bomo_Shujun_chuli_01(LPVOID pParam)
 	//采集完了
 
 	Bomo_m_Buf_Critical_R1.Lock();	//访问临界区，然后关闭防止死
-	Bomo_Psd_Loop_Buf_R1.LoopBuffRead(&Bomo_LoopBuffCtl_100_R1, Bomo_sensor_data_R1, Bomo_length);
+	Bomo_Psd_Loop_Buf_R1.LoopBuffRead(&Bomo_LoopBuffCtl_100_R1, Bomo_sensor_data_R1, Bomo_Psd_Loop_Buf_R2.LoopBuffDataLength(&Bomo_LoopBuffCtl_100_R1));
 	Bomo_m_Buf_Critical_R1.Unlock(); // 读取数据后释放临界区
 	Bomo_Flag_CalPsd_113_R1 = TRUE;
 
 
 	Bomo_m_Buf_Critical_R2.Lock();	//访问临界区，然后关闭防止死
-	Bomo_Psd_Loop_Buf_R2.LoopBuffRead(&Bomo_LoopBuffCtl_100_R2, Bomo_sensor_data_R2, Bomo_length);
+	Bomo_Psd_Loop_Buf_R2.LoopBuffRead(&Bomo_LoopBuffCtl_100_R2, Bomo_sensor_data_R2, Bomo_Psd_Loop_Buf_R2.LoopBuffDataLength(&Bomo_LoopBuffCtl_100_R2));
 	Bomo_m_Buf_Critical_R2.Unlock(); // 读取数据后释放临界区
 	Bomo_Flag_CalPsd_113_R2 = TRUE;
 
 
 	Bomo_m_Buf_Critical_R3.Lock();	//访问临界区，然后关闭防止死
-	Bomo_Psd_Loop_Buf_R3.LoopBuffRead(&Bomo_LoopBuffCtl_100_R3, Bomo_sensor_data_R3, Bomo_length);
+	Bomo_Psd_Loop_Buf_R3.LoopBuffRead(&Bomo_LoopBuffCtl_100_R3, Bomo_sensor_data_R3, Bomo_Psd_Loop_Buf_R2.LoopBuffDataLength(&Bomo_LoopBuffCtl_100_R3));
 	Bomo_m_Buf_Critical_R3.Unlock(); // 读取数据后释放临界区
 	Bomo_Flag_CalPsd_113_R3 = TRUE;
 
+	if ((Bomo_Flag_CalPsd_113_R3 == TRUE) && (Bomo_Flag_CalPsd_113_R2 == TRUE) && (Bomo_Flag_CalPsd_113_R1 == TRUE))
+
+	{
+		//文件存储
+
+
+		//Bomo_SJCJ_sensor_count_R++;//数据采集的次数
+		Bomo_Flag_bomo_TxT_R = TRUE;//数据导入txt
+		Bomo_Flag_bomo_Jisuan_R = TRUE;//数据开始运算txt
+		dlg->Bomo_Calculate();//记得删除
+
+
+	}
 
 
 	return 0;
 }
+
+
+
 
 
 /*文件处理*/
@@ -17837,13 +17868,65 @@ UINT CHighPrecisionDlg::Bomo_Shujun_to_txt(LPVOID pParam)
 
 
 
-
+//初始化函数
 
 void CHighPrecisionDlg::OnStnClickedStaticSystemstatus()
 {
 	// TODO: Add your control notification handler code here
 
+	int Baudrate = 921600;//设置波特率
+	double Sampleshape = 4;//设置采样频率
+
+
+	Bomo_sensor_R1.CreateSensorInstance1(SENSOR_ILD1420, &sensor1);
+	string com3 = "Com1";
+	//int Baudrate = 921600;//设置波特率
+	//double Sampleshape = 4;//设置采样频率
+
+	if (!sensor1)
+		AfxMessageBox(_T("1初始化失败"));
+
+	if ((err1 = Bomo_sensor_R1.Open_1420(sensor1, com3, Baudrate))<0)
+		AfxMessageBox(_T("打开传感器1失败"));
+	if ((err1 = Bomo_sensor_R1.SetSamplerate(sensor1, Sampleshape, Baudrate))<0)//设置参数
+		AfxMessageBox(_T("设置波特率失败1失败"));
+
+
+
+
+
+	Bomo_sensor_R3.CreateSensorInstance1(SENSOR_ILD1420, &sensor3);
+	string com1 = "Com5";
+
+
+	if (!sensor3)
+		AfxMessageBox(_T("3初始化失败"));
+
+	if ((err3 = Bomo_sensor_R3.Open_1420(sensor3, com1, Baudrate))<0)
+		AfxMessageBox(_T("打开传感器3失败"));
+	if ((err3 = Bomo_sensor_R3.SetSamplerate(sensor3, Sampleshape, Baudrate))<0)//设置参数
+		AfxMessageBox(_T("设置波特率失败3失败"));
+
+	Bomo_sensor_R2.CreateSensorInstance1(SENSOR_ILD1420, &sensor2);
+	string com2 = "Com3";
+	//int Baudrate = 921600;//设置波特率
+	//double Sampleshape = 4;//设置采样频率
+
+	if (!sensor2)
+		AfxMessageBox(_T("2初始化失败"));
+
+	if ((err2 = Bomo_sensor_R2.Open_1420(sensor2, com2, Baudrate))<0)
+		AfxMessageBox(_T("打开传感器2失败"));
+	if ((err2 = Bomo_sensor_R2.SetSamplerate(sensor2, Sampleshape, Baudrate))<0)//设置参数
+		AfxMessageBox(_T("设置波特率失败2失败"));
+
+
+
 }
+
+
+
+
 
 //波磨数据处理函数
 void CHighPrecisionDlg::Bomo_Calculate()
